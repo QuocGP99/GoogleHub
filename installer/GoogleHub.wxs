@@ -1,0 +1,83 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Google Hub"
+           Manufacturer="GoogleHub"
+           Version="1.0.0.0"
+           UpgradeCode="b7a6f3d2-8e4c-4b9a-9f12-3c5d7e8f9a01"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="AppIcon.ico" SourceFile="assets\GoogleHub.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Google Hub" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+
+    <CustomAction Id="LaunchApplication"
+                  Execute="immediate"
+                  Impersonate="yes"
+                  Return="asyncNoWait"
+                  FileRef="GoogleHubExe"
+                  ExeCommand="" />
+
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+
+    <UI>
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="LaunchApplication"
+               Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
+    </UI>
+
+    <Feature Id="MainFeature" Title="Google Hub" Level="1">
+      <ComponentRef Id="MainExecutable" />
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="ProgramMenuShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="GoogleHub" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="Google Hub" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <Component Id="MainExecutable" Directory="INSTALLFOLDER" Guid="*">
+      <File Id="GoogleHubExe" Source="dist\GoogleHub\GoogleHub.exe" KeyPath="yes" />
+    </Component>
+
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="..\dist\GoogleHub\**">
+        <Exclude Files="..\dist\GoogleHub\GoogleHub.exe" />
+      </Files>
+    </ComponentGroup>
+
+    <Component Id="ProgramMenuShortcut" Directory="ApplicationProgramsFolder" Guid="c8b7e4a3-1d2f-4a5b-8c9d-0e1f2a3b4c5d">
+      <Shortcut Id="StartMenuShortcut"
+                Name="Google Hub"
+                Description="Google Workspace Multi-Account Hub"
+                Target="[INSTALLFOLDER]GoogleHub.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="AppIcon.ico" />
+      <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\GoogleHub" Name="StartMenuInstalled" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="d9c8f5b4-2e3a-4b6c-9d0e-1f2a3b4c5d6e">
+      <Shortcut Id="DesktopShortcutItem"
+                Name="Google Hub"
+                Description="Google Workspace Multi-Account Hub"
+                Target="[INSTALLFOLDER]GoogleHub.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="AppIcon.ico" />
+      <RegistryValue Root="HKCU" Key="Software\GoogleHub" Name="DesktopInstalled" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+  </Package>
+</Wix>

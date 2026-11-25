@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# PyInstaller build artifacts
+build/
+dist/
+
+# Local user profiles & runtime settings
+google_hub_profiles/
+settings.json
+
+# IDE / Agent backups
+.agents/
+.ag-kit-backups/
+.vscode/
+.idea/
